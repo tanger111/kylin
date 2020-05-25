@@ -205,6 +205,27 @@ public class DefaultScheduler implements Scheduler<AbstractExecutable>, Connecti
         }
     }
 
+    /**
+     * add by tangtao for fail job auto process
+     */
+    private class FailJobRunner implements Runnable {
+
+        private String id;
+        private Output output;
+        public FailJobRunner(String id, Output output) {
+            this.id = id;
+            this.output = output;
+        }
+
+        @Override
+        public void run() {
+            logger.info("start process fail job!");
+            logger.info("id:{}, verbose:{}, extra:{}", id, output.getVerboseMsg(), output.getExtra());
+            executableManager.resumeJob(id);
+        }
+    }
+
+
     private class FetcherRunner implements Runnable {
 
         @Override
@@ -234,6 +255,7 @@ public class DefaultScheduler implements Scheduler<AbstractExecutable>, Connecti
                         if (output.getState() == ExecutableState.DISCARDED) {
                             nDiscarded++;
                         } else if (output.getState() == ExecutableState.ERROR) {
+                            jobPool.execute(new FailJobRunner(id, output));
                             nError++;
                         } else if (output.getState() == ExecutableState.SUCCEED) {
                             nSUCCEED++;
@@ -357,6 +379,7 @@ public class DefaultScheduler implements Scheduler<AbstractExecutable>, Connecti
 
         int pollSecond = jobEngineConfig.getPollIntervalSecond();
         logger.info("Fetching jobs every {} seconds", pollSecond);
+        logger.info("getJobPriorityConsidered: {}", jobEngineConfig.getJobPriorityConsidered());
         fetcher = jobEngineConfig.getJobPriorityConsidered() ? new FetcherRunnerWithPriority() : new FetcherRunner();
         fetcherPool.scheduleAtFixedRate(fetcher, pollSecond / 10, pollSecond, TimeUnit.SECONDS);
         hasStarted = true;

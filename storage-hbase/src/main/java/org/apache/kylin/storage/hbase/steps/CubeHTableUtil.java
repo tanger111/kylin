@@ -95,9 +95,10 @@ public class CubeHTableUtil {
             }
 
             if (admin.tableExists(TableName.valueOf(tableName))) {
-                // admin.disableTable(tableName);
-                // admin.deleteTable(tableName);
-                throw new RuntimeException("HBase table " + tableName + " exists!");
+                 admin.disableTable(TableName.valueOf(tableName));
+                 admin.deleteTable(TableName.valueOf(tableName));
+                 logger.warn("HBase table " + tableName + " exists! disable and drop it!!!");
+//                throw new RuntimeException("HBase table " + tableName + " exists!");
             }
 
             DeployCoprocessorCLI.deployCoprocessor(tableDesc);
