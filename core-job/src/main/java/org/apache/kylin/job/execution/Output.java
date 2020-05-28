@@ -31,4 +31,6 @@ public interface Output {
     ExecutableState getState();
 
     long getLastModified();
+
+    Long getResumeCount();
 }

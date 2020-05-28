@@ -19,6 +19,7 @@
 package org.apache.kylin.job.impl.threadpool;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
@@ -220,8 +221,10 @@ public class DefaultScheduler implements Scheduler<AbstractExecutable>, Connecti
         @Override
         public void run() {
             logger.info("start process fail job!");
-            logger.info("id:{}, verbose:{}, extra:{}", id, output.getVerboseMsg(), output.getExtra());
+            logger.info("id:{}, verbose:{}, extra:{}, resumeCount: {}", id,
+                    output.getVerboseMsg(), output.getExtra(), output.getResumeCount());
             executableManager.resumeJob(id);
+
         }
     }
 
@@ -239,7 +242,9 @@ public class DefaultScheduler implements Scheduler<AbstractExecutable>, Connecti
                 }
 
                 int nRunning = 0, nReady = 0, nStopped = 0, nOthers = 0, nError = 0, nDiscarded = 0, nSUCCEED = 0;
-                for (final String id : executableManager.getAllJobIds()) {
+                List<String> allJobIds = executableManager.getAllJobIds();
+                logger.info("allJobIds is : {}", allJobIds.size());
+                for (final String id : allJobIds) {
                     if (isJobPoolFull()) {
                         return;
                     }
@@ -255,7 +260,10 @@ public class DefaultScheduler implements Scheduler<AbstractExecutable>, Connecti
                         if (output.getState() == ExecutableState.DISCARDED) {
                             nDiscarded++;
                         } else if (output.getState() == ExecutableState.ERROR) {
-                            jobPool.execute(new FailJobRunner(id, output));
+                            // resume count 小于5次时 resume该job
+                            if (output.getResumeCount()<5) {
+                                jobPool.execute(new FailJobRunner(id, output));
+                            }
                             nError++;
                         } else if (output.getState() == ExecutableState.SUCCEED) {
                             nSUCCEED++;

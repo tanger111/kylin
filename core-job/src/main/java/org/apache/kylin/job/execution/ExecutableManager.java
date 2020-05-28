@@ -407,6 +407,7 @@ public class ExecutableManager {
             if (output != null) {
                 jobOutput.setContent(output);
             }
+            jobOutput.resumeAcc();
             executableDao.updateJobOutput(jobOutput);
             logger.info("job id:" + jobId + " from " + oldStatus + " to " + newStatus);
         } catch (PersistentException e) {

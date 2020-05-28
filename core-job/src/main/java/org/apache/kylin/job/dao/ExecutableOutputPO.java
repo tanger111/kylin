@@ -41,6 +41,9 @@ public class ExecutableOutputPO extends RootPersistentEntity {
     @JsonProperty("info")
     private Map<String, String> info = Maps.newHashMap();
 
+    @JsonProperty("resumeCount")
+    private Long resumeCount = 0L;
+
     public String getContent() {
         return content;
     }
@@ -63,5 +66,17 @@ public class ExecutableOutputPO extends RootPersistentEntity {
 
     public void setInfo(Map<String, String> info) {
         this.info = info;
+    }
+
+    public Long getResumeCount() {
+        return resumeCount;
+    }
+
+    public void setResumeCount(Long resumeCount) {
+        this.resumeCount = resumeCount;
+    }
+
+    public void resumeAcc() {
+        this.resumeCount++;
     }
 }

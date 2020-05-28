@@ -30,6 +30,16 @@ public class DefaultOutput implements Output {
     private Map<String, String> extra;
     private String verboseMsg;
     private long lastModified;
+    private Long resumeCount;
+
+    @Override
+    public Long getResumeCount() {
+        return resumeCount;
+    }
+
+    public void setResumeCount(Long resumeCount) {
+        this.resumeCount = resumeCount;
+    }
 
     @Override
     public Map<String, String> getExtra() {
