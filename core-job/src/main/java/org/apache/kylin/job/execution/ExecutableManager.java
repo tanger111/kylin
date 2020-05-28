@@ -171,6 +171,7 @@ public class ExecutableManager {
         result.setState(ExecutableState.valueOf(jobOutput.getStatus()));
         result.setVerboseMsg(jobOutput.getContent());
         result.setLastModified(jobOutput.getLastModified());
+        result.setResumeCount(jobOutput.getResumeCount());
         return result;
     }
 

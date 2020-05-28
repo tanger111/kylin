@@ -30,7 +30,7 @@ public class DefaultOutput implements Output {
     private Map<String, String> extra;
     private String verboseMsg;
     private long lastModified;
-    private Long resumeCount;
+    private Long resumeCount = 0L;
 
     @Override
     public Long getResumeCount() {
