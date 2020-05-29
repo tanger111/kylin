@@ -256,7 +256,7 @@ public class DefaultScheduler implements Scheduler<AbstractExecutable>, Connecti
                     final AbstractExecutable executable = executableManager.getJob(id);
                     if (!executable.isReady()) {
                         final Output output = executableManager.getOutput(id);
-                        logger.info("id: {}, output resume count: {}", id, output.getResumeCount());
+                        // logger.info("id: {}, output resume count: {}", id, output.getResumeCount());
                         // logger.debug("Job id:" + id + " not runnable");
                         if (output.getState() == ExecutableState.DISCARDED) {
                             nDiscarded++;
